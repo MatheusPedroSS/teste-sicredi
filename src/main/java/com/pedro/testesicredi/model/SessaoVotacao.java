@@ -11,16 +11,17 @@ public class SessaoVotacao {
     public SessaoVotacao() {
     }
 
-    public SessaoVotacao(Pauta pauta) {
+    public SessaoVotacao(Pauta pauta, Long tempoVotacao) {
         this.pauta = pauta;
-        this.timeVotacao = new Date();
+        Date momentAtual = new Date();
+        this.timeVotacao = new Date(momentAtual.getTime() + tempoVotacao);
     }
 
     @Override
     public String toString() {
-        return "Sessão: " 
+        return "Sessão Votação: " 
             + "\nId: " + id
-            + "\nPauta: " + pauta
+            + "\nPauta: " + pauta.getTitulo()
             + "\nTime Votação: " + timeVotacao
             + "\n";
     }

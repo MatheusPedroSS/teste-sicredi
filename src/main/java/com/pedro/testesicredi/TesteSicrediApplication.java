@@ -1,6 +1,7 @@
 package com.pedro.testesicredi;
 
 import com.pedro.testesicredi.model.Pauta;
+import com.pedro.testesicredi.model.SessaoVotacao;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +18,8 @@ public class TesteSicrediApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		Pauta p1 = new Pauta("teste1", "Pauta do teste 01");
 		System.out.println(p1);
-		
+		SessaoVotacao s1 = new SessaoVotacao(p1, 60000l);
+		System.out.println(s1);
 	}
 
 }
