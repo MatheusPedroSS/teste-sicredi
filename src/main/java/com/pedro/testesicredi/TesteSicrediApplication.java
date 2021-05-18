@@ -5,13 +5,18 @@ import com.pedro.testesicredi.model.Pauta;
 import com.pedro.testesicredi.model.SessaoVotacao;
 import com.pedro.testesicredi.model.Voto;
 import com.pedro.testesicredi.model.enums.VotoEnum;
+import com.pedro.testesicredi.service.PautaService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class TesteSicrediApplication implements CommandLineRunner{
+	
+	@Autowired
+	private PautaService service;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TesteSicrediApplication.class, args);
@@ -19,7 +24,10 @@ public class TesteSicrediApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		
 		Pauta pauta = new Pauta("teste1", "Pauta do teste 01");
+
+		service.insert(pauta);
 
 		SessaoVotacao sessaoVotacao = new SessaoVotacao(60000l);
 		sessaoVotacao.setPauta(pauta);

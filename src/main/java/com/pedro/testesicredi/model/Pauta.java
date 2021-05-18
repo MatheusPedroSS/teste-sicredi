@@ -21,9 +21,6 @@ public class Pauta {
     @OneToOne(mappedBy = "pauta")
     private SessaoVotacao sessaoVotacao;
 
-    public Pauta() {
-    }
-
     public Pauta(String titulo, String descricao) {
         this.titulo = titulo;
         this.descricao = descricao;
