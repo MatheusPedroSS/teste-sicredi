@@ -1,7 +1,10 @@
 package com.pedro.testesicredi;
 
+import com.pedro.testesicredi.model.Associado;
 import com.pedro.testesicredi.model.Pauta;
 import com.pedro.testesicredi.model.SessaoVotacao;
+import com.pedro.testesicredi.model.Voto;
+import com.pedro.testesicredi.model.enums.VotoEnum;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,10 +19,23 @@ public class TesteSicrediApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		Pauta p1 = new Pauta("teste1", "Pauta do teste 01");
-		System.out.println(p1);
-		SessaoVotacao s1 = new SessaoVotacao(p1, 60000l);
-		System.out.println(s1);
+		Pauta pauta = new Pauta("teste1", "Pauta do teste 01");
+
+		SessaoVotacao sessaoVotacao = new SessaoVotacao(60000l);
+		sessaoVotacao.setPauta(pauta);
+
+		Associado associado = new Associado("70950585475");
+
+		Voto voto = new Voto(VotoEnum.SIM);
+		voto.setAssociado(associado);
+
+		sessaoVotacao.setVoto(voto);
+
+		System.out.println(pauta);
+		System.out.println(sessaoVotacao);
+		System.out.println(associado);
+		System.out.println(voto);
+		
 	}
 
 }
