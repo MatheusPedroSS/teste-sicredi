@@ -4,13 +4,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -19,29 +19,56 @@ public class SessaoVotacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Date timeVotacao;
+    private Date finalTimerVotacao;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "sessaoVotacao")
     private Pauta pauta;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sessao_id")
+    @ManyToMany
+    @JoinTable(
+        name = "sessao_votacao_voto",
+        joinColumns = @JoinColumn(name = "sessao_id"),
+        inverseJoinColumns = @JoinColumn(name = "voto_id")
+    )
     private Set<Voto> votos = new HashSet<>();
 
     public SessaoVotacao() {
     }
 
-    public SessaoVotacao(Long tempoVotacao) {
-        Date momentAtual = new Date();
-        this.timeVotacao = new Date(momentAtual.getTime() + tempoVotacao);
+    public SessaoVotacao(Date finalTimerVotacao) {
+        this.finalTimerVotacao = finalTimerVotacao;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getFinalTimerVotacao() {
+        return finalTimerVotacao;
+    }
+
+    public void setFinalTimerVotacao(Date finalTimerVotacao) {
+        this.finalTimerVotacao = finalTimerVotacao;
+    }
+
+    public Pauta getPauta() {
+        return pauta;
     }
 
     public void setPauta(Pauta pauta) {
         this.pauta = pauta;
     }
 
-    public void setVoto(Voto voto){
-        votos.add(voto);
+    public Set<Voto> getVotos() {
+        return votos;
+    }
+
+    public void setVotos(Set<Voto> votos) {
+        this.votos = votos;
     }
 
     @Override
@@ -49,7 +76,7 @@ public class SessaoVotacao {
         return "Sessão Votação: " 
             + "\nId: " + id
             + "\nPauta: " + pauta.getTitulo()
-            + "\nTime Votação: " + timeVotacao
+            + "\nFinal Timer Votação: " + finalTimerVotacao
             + "\n";
     }
     

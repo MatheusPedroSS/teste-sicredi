@@ -8,7 +8,6 @@ import com.pedro.testesicredi.repository.PautaRepository;
 import com.pedro.testesicredi.service.exception.ObjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service

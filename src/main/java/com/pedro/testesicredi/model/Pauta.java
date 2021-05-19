@@ -2,6 +2,7 @@ package com.pedro.testesicredi.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,25 +19,51 @@ public class Pauta {
     private String descricao;
     private Date momentCriacao;
 
-    @OneToOne(mappedBy = "pauta")
+    @OneToOne(cascade = CascadeType.ALL)
     private SessaoVotacao sessaoVotacao;
+
+    public Pauta() {
+    }
 
     public Pauta(String titulo, String descricao) {
         this.titulo = titulo;
         this.descricao = descricao;
-        this.momentCriacao = new Date();
     }
 
     public Integer getId() {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getTitulo() {
         return titulo;
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
     public String getDescricao() {
         return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Date getMomentCriacao() {
+        return momentCriacao;
+    }
+
+    public void setMomentCriacao(Date momentCriacao) {
+        this.momentCriacao = momentCriacao;
+    }
+
+    public SessaoVotacao getSessaoVotacao() {
+        return sessaoVotacao;
     }
 
     public void setSessaoVotacao(SessaoVotacao sessaoVotacao) {
