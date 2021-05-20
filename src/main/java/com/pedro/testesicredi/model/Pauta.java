@@ -21,11 +21,15 @@ public class Pauta {
     private String descricao;
     @JsonFormat(pattern = "dd-MM-yy HH:mm:ss")
     private Date momentCriacao;
+    private Integer votosSim;
+    private Integer votosNao;
 
     @OneToOne(cascade = CascadeType.ALL)
     private SessaoVotacao sessaoVotacao;
 
     public Pauta() {
+        votosSim = 0;
+        votosNao = 0;
     }
 
     public Pauta(String titulo, String descricao) {
@@ -65,12 +69,75 @@ public class Pauta {
         this.momentCriacao = momentCriacao;
     }
 
+    public String getResultado() {
+        for(Voto v : sessaoVotacao.getVotos()){
+            if(v.getVoto().toString() == "SIM") {
+                setVotosSim();
+            } else if (v.getVoto().toString() == "NAO") {
+                setVotosNao();
+            }
+        }
+
+        if(votosNao == null || votosSim == null || (votosSim + votosNao == 0)) {
+            return "Sem votos";
+        }
+        else if(votosSim > votosNao) {
+            return "Pauta Aprovada!";
+        }
+        else if(votosNao > votosSim) {
+            return "Pauta Reprovada!";
+        } else {
+            return "Empate!";
+        }
+    }
+
     public SessaoVotacao getSessaoVotacao() {
         return sessaoVotacao;
     }
 
     public void setSessaoVotacao(SessaoVotacao sessaoVotacao) {
         this.sessaoVotacao = sessaoVotacao;
+    }
+
+    public Integer getVotosSim() {
+        return votosSim;
+    }
+
+    public void setVotosSim() {
+        votosSim += 1;
+    }
+
+    public Integer getVotosNao() {
+        return votosNao;
+    }
+
+    public void setVotosNao() {
+        votosNao += 1;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Pauta other = (Pauta) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
     @Override

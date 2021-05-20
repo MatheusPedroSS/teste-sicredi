@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping(value = "pauta")
+@RequestMapping
 public class PautaResource {
     
     @Autowired
@@ -41,7 +41,7 @@ public class PautaResource {
     @Autowired
     private VotoService votoService;
 
-    @PostMapping
+    @PostMapping(value = "pauta")
     public ResponseEntity addPauta(@RequestBody Pauta obj) {
         obj.setMomentCriacao(new Date());
         Pauta pauta = pautaService.insert(obj);
@@ -52,19 +52,22 @@ public class PautaResource {
         return ResponseEntity.created(uri).build();
     }
 
-    @PostMapping("/{id}/abrirSessao")
+    @PostMapping("pauta/{id}/abrirSessao")
     public ResponseEntity abrirSessao(@PathVariable Integer id, @RequestParam(value = "time") Long timeVotacao) {
         Pauta pauta = pautaService.find(id);
         if (timeVotacao < 60000l) {
             timeVotacao = 60000l;
         }
+        if(pauta.getSessaoVotacao() != null) {
+            return ResponseEntity.badRequest().body("Só e permitido uma sessão de votação por vez!");
+        } 
         SessaoVotacao sessao = sessaoService.insert(new SessaoVotacao(new Date(new Date().getTime() + timeVotacao)));
         pauta.setSessaoVotacao(sessao);
         pautaService.insert(pauta);
         return ResponseEntity.ok().body(sessao);
     }
 
-    @PostMapping("/{idSessao}")
+    @PostMapping("sessao/{idSessao}")
     public ResponseEntity votar(@PathVariable Integer idSessao, @RequestParam(value = "associado") String cpfAss, @RequestParam(value = "voto") String votoAss){
         
         SessaoVotacao sesao = sessaoService.find(idSessao);
@@ -75,23 +78,34 @@ public class PautaResource {
 
         Associado associado = associadoService.findByCpf(cpfAss).get();
 
-        Voto voto = new Voto(votoAss);
+        Voto voto = new Voto(VotoEnum.valueOf(votoAss));
+        for(Voto v: sesao.getVotos()) {
+            if(v.getAssociado().getCpf() == associado.getCpf()){
+                return ResponseEntity.badRequest().body("Só e permitido um voto por Associado!");
+            }
+        }
+
+        if(sesao.getFinalTimerVotacao().getTime() < new Date().getTime()) {
+            return ResponseEntity.badRequest().body("O tempo de Votação acabou!");
+        }
+
         voto.setAssociado(associado);
         sesao.setVotos(voto);
 
-        sessaoService.insert(sesao);
         votoService.insert(voto);
+
+        sessaoService.insert(sesao);
 
         return ResponseEntity.ok().body("Voto Efetuado!");
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("pauta/{id}")
     public ResponseEntity find(@PathVariable Integer id) {
         Pauta pauta = pautaService.find(id);
         return ResponseEntity.ok().body(pauta);
     }
 
-    @GetMapping
+    @GetMapping("pauta")
     public ResponseEntity findAll() {
         List<Pauta> pautas = pautaService.findAll();
         return ResponseEntity.ok().body(pautas);
