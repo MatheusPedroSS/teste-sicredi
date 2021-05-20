@@ -13,14 +13,19 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class SessaoVotacao {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @JsonFormat(pattern = "dd-MM-yy HH:mm:ss")
     private Date finalTimerVotacao;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "sessaoVotacao")
     private Pauta pauta;
 
@@ -67,8 +72,8 @@ public class SessaoVotacao {
         return votos;
     }
 
-    public void setVotos(Set<Voto> votos) {
-        this.votos = votos;
+    public void setVotos(Voto voto) {
+        this.votos.add(voto);
     }
 
     @Override

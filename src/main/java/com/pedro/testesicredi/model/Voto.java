@@ -2,7 +2,9 @@ package com.pedro.testesicredi.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,14 +21,14 @@ public class Voto {
     private VotoEnum voto;
     private Date moment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Associado associado;
 
     public Voto() {
     }
 
-    public Voto(VotoEnum votoEnum) {
-        this.voto = votoEnum;
+    public Voto(String votoEnum) {
+        this.voto = votoEnum.toUpperCase() == "SIM" ? VotoEnum.SIM:VotoEnum.NAO;
         this.moment = new Date();
     }
 

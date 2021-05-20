@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class Pauta {
     
@@ -17,6 +19,7 @@ public class Pauta {
     private Integer id;
     private String titulo;
     private String descricao;
+    @JsonFormat(pattern = "dd-MM-yy HH:mm:ss")
     private Date momentCriacao;
 
     @OneToOne(cascade = CascadeType.ALL)

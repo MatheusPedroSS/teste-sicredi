@@ -4,10 +4,15 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import com.pedro.testesicredi.model.Associado;
 import com.pedro.testesicredi.model.Pauta;
 import com.pedro.testesicredi.model.SessaoVotacao;
+import com.pedro.testesicredi.model.Voto;
+import com.pedro.testesicredi.model.enums.VotoEnum;
+import com.pedro.testesicredi.service.AssociadoService;
 import com.pedro.testesicredi.service.PautaService;
 import com.pedro.testesicredi.service.SessaoVotacaoService;
+import com.pedro.testesicredi.service.VotoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +35,12 @@ public class PautaResource {
     @Autowired
     private SessaoVotacaoService sessaoService;
 
+    @Autowired
+    private AssociadoService associadoService;
+
+    @Autowired
+    private VotoService votoService;
+
     @PostMapping
     public ResponseEntity addPauta(@RequestBody Pauta obj) {
         obj.setMomentCriacao(new Date());
@@ -51,6 +62,27 @@ public class PautaResource {
         pauta.setSessaoVotacao(sessao);
         pautaService.insert(pauta);
         return ResponseEntity.ok().body(sessao);
+    }
+
+    @PostMapping("/{idSessao}")
+    public ResponseEntity votar(@PathVariable Integer idSessao, @RequestParam(value = "associado") String cpfAss, @RequestParam(value = "voto") String votoAss){
+        
+        SessaoVotacao sesao = sessaoService.find(idSessao);
+
+        if(associadoService.findByCpf(cpfAss).isEmpty()){
+            associadoService.insert(new Associado(cpfAss));
+        }
+
+        Associado associado = associadoService.findByCpf(cpfAss).get();
+
+        Voto voto = new Voto(votoAss);
+        voto.setAssociado(associado);
+        sesao.setVotos(voto);
+
+        sessaoService.insert(sesao);
+        votoService.insert(voto);
+
+        return ResponseEntity.ok().body("Voto Efetuado!");
     }
 
     @GetMapping("/{id}")
